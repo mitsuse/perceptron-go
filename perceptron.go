@@ -10,7 +10,11 @@ type Perceptron struct {
 	iteration int
 }
 
-func New(iteration byte) *Perceptron {
+func New(iteration int) *Perceptron {
+	if iteration <= 0 {
+		iteration = 1
+	}
+
 	p := &Perceptron{
 		iteration: int(iteration),
 	}

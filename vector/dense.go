@@ -21,7 +21,7 @@ func NewDense(valueSeq ...float64) *DenseVector {
 	return v
 }
 
-func NewZeroDens(size int) *DenseVector {
+func NewZeroDense(size int) *DenseVector {
 	v := &DenseVector{
 		valueSeq: make([]float64, size),
 	}
