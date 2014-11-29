@@ -8,9 +8,8 @@ type Classifier struct {
 }
 
 func NewClassifier(extractor Extractor) *Classifier {
-	// TODO: Initialize weight with zero-vector.
 	c := &Classifier{
-		weight:    nil,
+		weight:    vector.NewZeroDens(0),
 		extractor: extractor,
 	}
 

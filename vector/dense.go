@@ -1,11 +1,31 @@
 package vector
 
 type DenseVector struct {
+	valueSeq []float64
+}
+
+func NewDense(valueSeq ...float64) *DenseVector {
+	v := &DenseVector{
+		valueSeq: make([]float64, len(valueSeq)),
+	}
+
+	for offset, value := range valueSeq {
+		v.valueSeq[offset] = value
+	}
+
+	return v
+}
+
+func NewZeroDens(size int) *DenseVector {
+	v := &DenseVector{
+		valueSeq: make([]float64, size),
+	}
+
+	return v
 }
 
 func (v *DenseVector) Size() int {
-	// TODO: Implement this.
-	return 0
+	return len(v.valueSeq)
 }
 
 func (v *DenseVector) Add(vector Vector) {
