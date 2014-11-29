@@ -5,6 +5,16 @@ type Classifier struct {
 	extractor Extractor
 }
 
+func NewClassifier(extractor Extractor) *Classifier {
+	// TODO: Initialize weight with zero-vector.
+	c := &Classifier{
+		weight:    nil,
+		extractor: extractor,
+	}
+
+	return c
+}
+
 func (c *Classifier) Weight() Matrix {
 	return c.weight
 }
