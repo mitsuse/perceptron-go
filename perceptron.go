@@ -1,6 +1,8 @@
 package perceptron
 
 import (
+	"errors"
+
 	"github.com/mitsuse/perceptron-go/vector"
 )
 
@@ -44,8 +46,13 @@ func (p *Perceptron) learnInstance(classifier *Classifier, instance Instance) er
 		return err
 	}
 
-	if instance.Label() != inference.Label() {
+	if instance.Label() == inference.Label() {
 		classifier.Weight().Add(inference.Update())
+
+		if classifier.Weight().Undefined() {
+			// TODO: Write the error message.
+			return errors.New("")
+		}
 	}
 
 	return nil

@@ -5,7 +5,8 @@ import (
 )
 
 type DenseVector struct {
-	valueSeq []float64
+	valueSeq  []float64
+	undefined bool
 }
 
 func NewDense(valueSeq ...float64) *DenseVector {
@@ -32,6 +33,10 @@ func (v *DenseVector) Size() int {
 	return len(v.valueSeq)
 }
 
+func (v *DenseVector) Undefined() bool {
+	return v.undefined
+}
+
 func (v *DenseVector) Get(index int) (float64, error) {
 	if index < 0 || v.Size() <= index {
 		// TODO: Write the error message.
@@ -42,7 +47,12 @@ func (v *DenseVector) Get(index int) (float64, error) {
 }
 
 func (v *DenseVector) Add(vector Vector) {
-	// TODO: Verify the size of "vector".
+	if v.Size() != vector.Size() || v.Undefined() || vector.Undefined() {
+		v.valueSeq = []float64{}
+		v.undefined = true
+		return
+	}
+
 	iter := vector.NonZeros()
 	for iter.HasNext() {
 		index, value := iter.Get()
@@ -51,7 +61,11 @@ func (v *DenseVector) Add(vector Vector) {
 }
 
 func (v *DenseVector) Dot(vector Vector) (float64, error) {
-	// TODO: Verify the size of "vector".
+	if v.Size() != vector.Size() || v.Undefined() || vector.Undefined() {
+		// TODO: Write the error message.
+		return 0, errors.New("")
+	}
+
 	product := 0
 
 	iter := vector.NonZeros()

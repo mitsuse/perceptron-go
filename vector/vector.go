@@ -2,6 +2,7 @@ package vector
 
 type Vector interface {
 	Size() int
+	Undefined() bool
 	Get(index int) (float64, error)
 	Add(vector Vector)
 	Dot(vector Vector) (float64, error)
