@@ -73,7 +73,7 @@ type InstanceIter interface {
 
 type Vector interface {
 	Add(vector Vector)
-	Dot(vector Vector) float64
+	Dot(vector Vector) (float64, error)
 	Extend(size int)
 	Size() int
 }
