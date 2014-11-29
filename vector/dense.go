@@ -38,5 +38,18 @@ func (v *DenseVector) Dot(vector Vector) (float64, error) {
 }
 
 func (v *DenseVector) Resize(size int) {
-	// TODO: Implement this.
+	valueSeq := make([]float64, size)
+
+	var limit int
+	if size < v.Size() {
+		limit = size
+	} else {
+		limit = v.Size()
+	}
+
+	for offset := 0; offset < limit; offset++ {
+		valueSeq[offset] = v.valueSeq[offset]
+	}
+
+	v.valueSeq = valueSeq
 }
