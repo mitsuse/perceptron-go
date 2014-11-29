@@ -118,7 +118,7 @@ func (v *DenseVector) NonZeros() Iter {
 func (v *DenseVector) Clone() Vector {
 	valueSeq := make([]float64, v.Size())
 
-	iter := vector.NonZeros()
+	iter := v.NonZeros()
 	for iter.HasNext() {
 		index, value := iter.Get()
 		valueSeq[index] = value
