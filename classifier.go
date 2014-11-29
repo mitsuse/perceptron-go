@@ -1,7 +1,9 @@
 package perceptron
 
+import "github.com/mitsuse/perceptron-go/vector"
+
 type Classifier struct {
-	weight    Vector
+	weight    *vector.DenseVector
 	extractor Extractor
 }
 
@@ -48,5 +50,5 @@ func (c *Classifier) Classify(instance Instance) (Instance, error) {
 }
 
 type Extractor interface {
-	Extract(instance Instance) (Vector, error)
+	Extract(instance Instance) (vector.Vector, error)
 }
