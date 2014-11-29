@@ -16,7 +16,7 @@ func NewClassifier(extractor Extractor) *Classifier {
 	return c
 }
 
-func (c *Classifier) Weight() Vector {
+func (c *Classifier) Weight() vector.Vector {
 	return c.weight
 }
 
