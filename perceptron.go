@@ -13,16 +13,22 @@ func New(iteration byte) *Perceptron {
 }
 
 func (p *Perceptron) Learn(model Model, iter InstanceIter) error {
-	for iter.HasNext() {
-		instance := iter.Get()
+	for iteration := 1; iteration <= p.iteration; iteration++ {
+		for iter.HasNext() {
+			instance := iter.Get()
 
-		if err := p.learnInstance(model, instance); err != nil {
+			if err := p.learnInstance(model, instance); err != nil {
+				return err
+			}
+		}
+
+		if err := iter.Error(); err != nil {
 			return err
 		}
-	}
 
-	if err := iter.Error(); err != nil {
-		return err
+		if err := iter.Init(); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -47,4 +53,5 @@ type InstanceIter interface {
 	HasNext() bool
 	Get() Instance
 	Error() error
+	Init() error
 }
