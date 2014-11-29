@@ -12,12 +12,12 @@ func New(iteration byte) *Perceptron {
 	return p
 }
 
-func (p *Perceptron) Learn(inferencer Inferencer, iter InstanceIter) error {
+func (p *Perceptron) Learn(classifier *Classifier, iter InstanceIter) error {
 	for iteration := 1; iteration <= p.iteration; iteration++ {
 		for iter.HasNext() {
 			instance := iter.Get()
 
-			if err := p.learnInstance(inferencer, instance); err != nil {
+			if err := p.learnInstance(classifier, instance); err != nil {
 				return err
 			}
 		}
@@ -34,33 +34,27 @@ func (p *Perceptron) Learn(inferencer Inferencer, iter InstanceIter) error {
 	return nil
 }
 
-func (p *Perceptron) learnInstance(inferencer Inferencer, instance Instance) error {
-	inference, err := inferencer.Infer(instance)
+func (p *Perceptron) learnInstance(classifier *Classifier, instance Instance) error {
+	inference, err := classifier.Classify(instance)
 	if err != nil {
 		return err
 	}
 
 	if instance.Label() != inference.Label() {
-		inferencer.Weight().Add(instance.Update())
-		inferencer.Weight().Sub(inference.Update())
+		classifier.Weight().Add(inference.Update())
 	}
 
 	return nil
 }
 
 type Learner interface {
-	Learn(inferencer Inferencer, iter InstanceIter) error
-}
-
-type Inferencer interface {
-	Infer(instance Instance) (Instance, error)
-	Weight() Matrix
+	Learn(classifier *Classifier, iter InstanceIter) error
 }
 
 type Instance interface {
 	Label() int
-	Feature() Matrix
-	Update() Matrix
+	Feature() Vector
+	Update() Vector
 }
 
 type InstanceIter interface {
@@ -70,7 +64,7 @@ type InstanceIter interface {
 	Init() error
 }
 
-type Matrix interface {
-	Add(matrix Matrix)
-	Sub(matrix Matrix)
+type Vector interface {
+	Add(matrix Vector)
+	Sub(matrix Vector)
 }
