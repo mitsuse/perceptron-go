@@ -37,6 +37,6 @@ func (v *DenseVector) Dot(vector Vector) (float64, error) {
 	return 0, nil
 }
 
-func (v *DenseVector) Extend(size int) {
+func (v *DenseVector) Resize(size int) {
 	// TODO: Implement this.
 }
