@@ -1,21 +1,22 @@
 package perceptron
 
+import "github.com/mitsuse/perceptron-go/vector"
+
 type Classifier struct {
-	weight    Vector
+	weight    *vector.DenseVector
 	extractor Extractor
 }
 
 func NewClassifier(extractor Extractor) *Classifier {
-	// TODO: Initialize weight with zero-vector.
 	c := &Classifier{
-		weight:    nil,
+		weight:    vector.NewZeroDens(0),
 		extractor: extractor,
 	}
 
 	return c
 }
 
-func (c *Classifier) Weight() Vector {
+func (c *Classifier) Weight() vector.Vector {
 	return c.weight
 }
 
@@ -29,7 +30,7 @@ func (c *Classifier) Classify(instance Instance) (Instance, error) {
 	inference.SetFeature(feature)
 
 	if c.Weight().Size() < feature.Size() {
-		c.Weight().Extend(feature.Size())
+		c.Weight().Resize(feature.Size())
 	}
 
 	score, err := c.Weight().Dot(feature)
@@ -48,5 +49,5 @@ func (c *Classifier) Classify(instance Instance) (Instance, error) {
 }
 
 type Extractor interface {
-	Extract(instance Instance) (Vector, error)
+	Extract(instance Instance) (vector.Vector, error)
 }

@@ -1,5 +1,11 @@
 package perceptron
 
+import (
+	"errors"
+
+	"github.com/mitsuse/perceptron-go/vector"
+)
+
 type Perceptron struct {
 	iteration int
 }
@@ -40,8 +46,13 @@ func (p *Perceptron) learnInstance(classifier *Classifier, instance Instance) er
 		return err
 	}
 
-	if instance.Label() != inference.Label() {
+	if instance.Label() == inference.Label() {
 		classifier.Weight().Add(inference.Update())
+
+		if classifier.Weight().Undefined() {
+			// TODO: Write the error message.
+			return errors.New("")
+		}
 	}
 
 	return nil
@@ -54,13 +65,13 @@ type Learner interface {
 type Instance interface {
 	Label() int
 	Score() float64
-	Feature() Vector
+	Feature() vector.Vector
 
 	SetLabel(label int)
 	SetScore(score float64)
-	SetFeature(vector Vector)
+	SetFeature(vector vector.Vector)
 
-	Update() Vector
+	Update() vector.Vector
 	Clone() Instance
 }
 
@@ -69,11 +80,4 @@ type InstanceIter interface {
 	Get() Instance
 	Error() error
 	Init() error
-}
-
-type Vector interface {
-	Add(vector Vector)
-	Dot(vector Vector) (float64, error)
-	Extend(size int)
-	Size() int
 }
