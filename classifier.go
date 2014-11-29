@@ -1,7 +1,7 @@
 package perceptron
 
 type Classifier struct {
-	weight    Matrix
+	weight    Vector
 	extractor Extractor
 }
 
@@ -15,7 +15,7 @@ func NewClassifier(extractor Extractor) *Classifier {
 	return c
 }
 
-func (c *Classifier) Weight() Matrix {
+func (c *Classifier) Weight() Vector {
 	return c.weight
 }
 
