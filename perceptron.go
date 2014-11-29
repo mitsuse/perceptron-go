@@ -53,8 +53,15 @@ type Learner interface {
 
 type Instance interface {
 	Label() int
+	Score() float64
 	Feature() Vector
+
+	SetLabel(label int)
+	SetScore(score float64)
+	SetFeature(vector Vector)
+
 	Update() Vector
+	Clone() Instance
 }
 
 type InstanceIter interface {
@@ -65,6 +72,6 @@ type InstanceIter interface {
 }
 
 type Vector interface {
-	Add(matrix Vector)
-	Sub(matrix Vector)
+	Add(vector Vector)
+	Dot(vector Vector)
 }
