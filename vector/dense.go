@@ -115,6 +115,22 @@ func (v *DenseVector) NonZeros() Iter {
 	return iter
 }
 
+func (v *DenseVector) Clone() Vector {
+	valueSeq := make([]float64, v.Size())
+
+	iter := vector.NonZeros()
+	for iter.HasNext() {
+		index, value := iter.Get()
+		valueSeq[index] = value
+	}
+
+	vector := &DenseVector{
+		valueSeq: valueSeq,
+	}
+
+	return vector
+}
+
 type denseNonZeroIter struct {
 	vector *DenseVector
 	index  int

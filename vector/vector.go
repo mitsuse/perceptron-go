@@ -9,6 +9,7 @@ type Vector interface {
 	Dot(vector Vector) (float64, error)
 	Resize(size int)
 	NonZeros() Iter
+	Clone() Vector
 }
 
 type Iter interface {
