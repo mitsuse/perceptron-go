@@ -1,5 +1,9 @@
 package vector
 
+import (
+	"errors"
+)
+
 type DenseVector struct {
 	valueSeq []float64
 }
@@ -28,13 +32,35 @@ func (v *DenseVector) Size() int {
 	return len(v.valueSeq)
 }
 
+func (v *DenseVector) Get(index int) (float64, error) {
+	if index < 0 || v.Size() <= index {
+		// TODO: Write the error message.
+		return 0, errors.New("")
+	}
+
+	return v.valueSeq[index], nil
+}
+
 func (v *DenseVector) Add(vector Vector) {
-	// TODO: Implement this.
+	// TODO: Verify the size of "vector".
+	iter := vector.NonZeros()
+	for iter.HasNext() {
+		index, value := iter.Get()
+		v.valueSeq[index] += value
+	}
 }
 
 func (v *DenseVector) Dot(vector Vector) (float64, error) {
-	// TODO: Implement this.
-	return 0, nil
+	// TODO: Verify the size of "vector".
+	product := 0
+
+	iter := vector.NonZeros()
+	for iter.HasNext() {
+		index, value := iter.Get()
+		product += v.valueSeq[index] * value
+	}
+
+	return product, nil
 }
 
 func (v *DenseVector) Resize(size int) {
@@ -52,4 +78,39 @@ func (v *DenseVector) Resize(size int) {
 	}
 
 	v.valueSeq = valueSeq
+}
+
+func (v *DenseVector) NonZeros() Iter {
+	iter := &denseNonZeroIter{
+		vector: v,
+		index:  -1,
+	}
+
+	return iter
+}
+
+type denseNonZeroIter struct {
+	vector *DenseVector
+	index  int
+	value  float64
+}
+
+func (iter *denseNonZeroIter) HasNext() bool {
+	for index := iter.index + 1; index < iter.vector.Size(); index++ {
+		value, _ := v.Get(index)
+		if value == 0 {
+			continue
+		}
+
+		iter.index = index
+		iter.value = value
+
+		return true
+	}
+
+	return false
+}
+
+func (iter *denseNonZeroIter) Get() (index int, value float64) {
+	return iter.index, iter.value
 }
