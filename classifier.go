@@ -28,6 +28,10 @@ func (c *Classifier) Classify(instance Instance) (Instance, error) {
 	}
 	inference.SetFeature(feature)
 
+	if c.Weight().Size() < feature.Size() {
+		c.Weight().Extend(feature.Size())
+	}
+
 	score, err := c.Weight().Dot(feature)
 	if err != nil {
 		return nil, err

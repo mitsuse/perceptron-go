@@ -74,4 +74,6 @@ type InstanceIter interface {
 type Vector interface {
 	Add(vector Vector)
 	Dot(vector Vector)
+	Extend(size int)
+	Size() int
 }
