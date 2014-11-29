@@ -60,6 +60,18 @@ func (v *DenseVector) Add(vector Vector) {
 	}
 }
 
+func (v *DenseVector) Scalar(scalar float64) {
+	if v.Undefined() {
+		return
+	}
+
+	iter := v.NonZeros()
+	for iter.HasNext() {
+		index, value := iter.Get()
+		v.valueSeq[index] = value * scalar
+	}
+}
+
 func (v *DenseVector) Dot(vector Vector) (float64, error) {
 	if v.Size() != vector.Size() || v.Undefined() || vector.Undefined() {
 		// TODO: Write the error message.
