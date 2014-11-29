@@ -1,22 +1,18 @@
 package perceptron
 
 type Classifier struct {
-	weight Matrix
+	weight    Matrix
+	extractor Extractor
 }
 
 func (c *Classifier) Weight() Matrix {
 	return c.weight
 }
 
-func (c *Classifier) Extract(instance Instance) (Vector, error) {
-	// TODO: Implement this.
-	return nil, nil
-}
-
 func (c *Classifier) Classify(instance Instance) (Instance, error) {
 	inference := instance.Clone()
 
-	feature, err := c.Extract(instance)
+	feature, err := c.extractor.Extract(instance)
 	if err != nil {
 		return nil, err
 	}
@@ -35,4 +31,8 @@ func (c *Classifier) Classify(instance Instance) (Instance, error) {
 	}
 
 	return inference, nil
+}
+
+type Extractor interface {
+	Extract(instance Instance) (Vector, error)
 }
