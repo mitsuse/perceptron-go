@@ -111,7 +111,7 @@ type denseNonZeroIter struct {
 
 func (iter *denseNonZeroIter) HasNext() bool {
 	for index := iter.index + 1; index < iter.vector.Size(); index++ {
-		value, _ := v.Get(index)
+		value, _ := iter.vector.Get(index)
 		if value == 0 {
 			continue
 		}
