@@ -9,7 +9,7 @@ type Classifier struct {
 
 func NewClassifier(extractor Extractor) *Classifier {
 	c := &Classifier{
-		weight:    vector.NewZeroDens(0),
+		weight:    vector.NewZeroDense(0),
 		extractor: extractor,
 	}
 
