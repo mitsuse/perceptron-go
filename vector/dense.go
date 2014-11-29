@@ -63,10 +63,10 @@ func (v *DenseVector) Add(vector Vector) {
 func (v *DenseVector) Dot(vector Vector) (float64, error) {
 	if v.Size() != vector.Size() || v.Undefined() || vector.Undefined() {
 		// TODO: Write the error message.
-		return 0, errors.New("")
+		return 0.0, errors.New("")
 	}
 
-	product := 0
+	product := 0.0
 
 	iter := vector.NonZeros()
 	for iter.HasNext() {
