@@ -34,11 +34,9 @@ type Learner interface {
 
 type Instance interface {
 	Label() int
-	Score() float64
 	Feature() vector.Vector
 
 	SetLabel(label int)
-	SetScore(score float64)
 	SetFeature(vector vector.Vector)
 
 	Update() vector.Vector
