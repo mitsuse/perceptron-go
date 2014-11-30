@@ -1,53 +1,69 @@
 package perceptron
 
-import "github.com/mitsuse/perceptron-go/vector"
+import (
+	"github.com/mitsuse/perceptron-go/vector"
+)
 
 type Classifier struct {
-	weight    *vector.DenseVector
-	extractor Extractor
+	weight  *vector.DenseVector
+	indexer Indexer
 }
 
-func NewClassifier(extractor Extractor) *Classifier {
+func NewClassifier(indexer Indexer) *Classifier {
 	c := &Classifier{
-		weight:    vector.NewZeroDense(0),
-		extractor: extractor,
+		weight:  vector.NewZeroDense(0),
+		indexer: indexer,
 	}
 
 	return c
 }
 
 func (c *Classifier) Weight() vector.Vector {
+	if c.weight.Size() < c.indexer.Size() {
+		c.weight.Resize(c.indexer.Size())
+	}
+
 	return c.weight
 }
 
-func (c *Classifier) Classify(instance Instance) (Instance, error) {
-	inference := instance.Clone()
-
-	feature, err := c.extractor.Extract(instance)
-	if err != nil {
-		return nil, err
-	}
-	inference.SetFeature(feature)
-
-	if c.Weight().Size() < feature.Size() {
-		c.Weight().Resize(feature.Size())
-	}
+func (c *Classifier) Update(learner Learner, instance Instance) error {
+	feature := instance.Extract(c.indexer, true)
 
 	score, err := c.Weight().Dot(feature)
 	if err != nil {
-		return nil, err
-	}
-	inference.SetScore(score)
-
-	if score > 0 {
-		inference.SetLabel(1)
-	} else {
-		inference.SetLabel(-1)
+		return err
 	}
 
-	return inference, nil
+	if score > 0 == (instance.Label() == 1) {
+		return nil
+	}
+
+	if err := learner.Learn(c.Weight(), instance.Label(), feature); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-type Extractor interface {
-	Extract(instance Instance) (vector.Vector, error)
+func (c *Classifier) Classify(instance Instance) (int, error) {
+	feature := instance.Extract(c.indexer, false)
+
+	score, err := c.Weight().Dot(feature)
+	if err != nil {
+		return 0, err
+	}
+
+	var label int
+	if score > 0 {
+		label = 1
+	} else {
+		label = -1
+	}
+
+	return label, nil
+}
+
+type Indexer interface {
+	Size() int
+	Index(identifier []int32, indexed bool) int
 }
