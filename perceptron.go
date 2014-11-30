@@ -7,54 +7,19 @@ import (
 )
 
 type Perceptron struct {
-	iteration int
 }
 
-func New(iteration int) *Perceptron {
-	if iteration <= 0 {
-		iteration = 1
-	}
-
-	p := &Perceptron{
-		iteration: int(iteration),
-	}
+func New() *Perceptron {
+	p := &Perceptron{}
 
 	return p
 }
 
-func (p *Perceptron) Learn(classifier *Classifier, iter InstanceIter) error {
-	for iteration := 1; iteration <= p.iteration; iteration++ {
-		for iter.HasNext() {
-			instance := iter.Get()
+func (p *Perceptron) Learn(weight vector.Vector, example, inference Instance) error {
+	if example.Label() != inference.Label() {
+		weight.Add(example.Update())
 
-			if err := p.learnInstance(classifier, instance); err != nil {
-				return err
-			}
-		}
-
-		if err := iter.Error(); err != nil {
-			return err
-		}
-
-		if err := iter.Init(); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (p *Perceptron) learnInstance(classifier *Classifier, instance Instance) error {
-	inference, err := classifier.Classify(instance)
-	if err != nil {
-		return err
-	}
-
-	if instance.Label() != inference.Label() {
-		inference.SetLabel(instance.Label())
-		classifier.Weight().Add(inference.Update())
-
-		if classifier.Weight().Undefined() {
+		if weight.Undefined() {
 			// TODO: Write the error message.
 			return errors.New("")
 		}
@@ -64,7 +29,7 @@ func (p *Perceptron) learnInstance(classifier *Classifier, instance Instance) er
 }
 
 type Learner interface {
-	Learn(classifier *Classifier, iter InstanceIter) error
+	Learn(weight vector.Vector, example, inference Instance) error
 }
 
 type Instance interface {
