@@ -17,45 +17,51 @@ func NewClassifier(indexer Indexer) *Classifier {
 }
 
 func (c *Classifier) Weight() vector.Vector {
+	if c.weight.Size() < c.indexer.Size() {
+		c.weight.Resize(c.indexer.Size())
+	}
+
 	return c.weight
 }
 
-func (c *Classifier) Infer(instance Instance) (example, inference Instance, err error) {
-	example = instance.Clone()
-	example.Extract(c.indexer)
-	example.SetLabel(instance.Label())
-
-	feature := example.Feature()
-
-	if c.Weight().Size() < feature.Size() {
-		c.Weight().Resize(feature.Size())
-	}
+func (c *Classifier) Update(learner Learner, instance Instance) error {
+	feature := instance.Extract(c.indexer, true)
 
 	score, err := c.Weight().Dot(feature)
 	if err != nil {
-		return nil, nil, err
+		return err
 	}
 
-	inference = instance.Clone()
-	if score > 0 {
-		inference.SetLabel(1)
-	} else {
-		inference.SetLabel(-1)
+	if score > 0 == (instance.Label() == 1) {
+		return nil
 	}
 
-	return example, inference, nil
+	if err := learner.Learn(c.Weight(), instance.Label(), feature); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (c *Classifier) Classify(instance Instance) (label int, err error) {
-	_, inference, err := c.Infer(instance)
+func (c *Classifier) Classify(instance Instance) (int, error) {
+	feature := instance.Extract(c.indexer, false)
+
+	score, err := c.Weight().Dot(feature)
 	if err != nil {
 		return 0, err
 	}
 
-	return inference.Label(), nil
+	var label int
+	if score > 0 {
+		label = 1
+	} else {
+		label = -1
+	}
+
+	return label, nil
 }
 
 type Indexer interface {
 	Size() int
-	Index(identifier []int32) int
+	Index(identifier []int32, indexed bool) int
 }

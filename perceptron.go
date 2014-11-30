@@ -15,29 +15,24 @@ func New() *Perceptron {
 	return p
 }
 
-func (p *Perceptron) Learn(weight vector.Vector, example, inference Instance) error {
-	if example.Label() != inference.Label() {
-		feature := example.Feature().Clone()
-		feature.Scalar(float64(example.Label()))
-		weight.Add(feature)
+func (p *Perceptron) Learn(weight vector.Vector, label int, feature vector.Vector) error {
+	update := feature.Clone()
+	update.Scalar(float64(label))
+	weight.Add(update)
 
-		if weight.Undefined() {
-			// TODO: Write the error message.
-			return errors.New("")
-		}
+	if weight.Undefined() {
+		// TODO: Write the error message.
+		return errors.New("")
 	}
 
 	return nil
 }
 
 type Learner interface {
-	Learn(weight vector.Vector, example, inference Instance) error
+	Learn(weight vector.Vector, label int, feature vector.Vector) error
 }
 
 type Instance interface {
 	Label() int
-	Extract(indexer Indexer)
-	Feature() vector.Vector
-	SetLabel(label int)
-	Clone() Instance
+	Extract(indexer Indexer, indexed bool) vector.Vector
 }
