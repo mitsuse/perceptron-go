@@ -46,6 +46,17 @@ func (v *DenseVector) Get(index int) (float64, error) {
 	return v.valueSeq[index], nil
 }
 
+func (v *DenseVector) Set(index int, value float64) error {
+	if index < 0 || v.Size() <= index {
+		// TODO: Write the error message.
+		return errors.New("")
+	}
+
+	v.valueSeq[index] = value
+
+	return nil
+}
+
 func (v *DenseVector) Add(vector Vector) {
 	if v.Size() != vector.Size() || v.Undefined() || vector.Undefined() {
 		v.valueSeq = []float64{}
