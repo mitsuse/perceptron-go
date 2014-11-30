@@ -19,10 +19,6 @@ func NewClassifier(indexer Indexer) *Classifier {
 	return c
 }
 
-func (c *Classifier) Weight() vector.Vector {
-	return c.model.Weight()
-}
-
 func (c *Classifier) Update(learner Learner, instance Instance) error {
 	feature := c.model.Extract(instance, true)
 
