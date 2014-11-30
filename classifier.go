@@ -3,14 +3,14 @@ package perceptron
 import "github.com/mitsuse/perceptron-go/vector"
 
 type Classifier struct {
-	weight    *vector.DenseVector
-	extractor Extractor
+	weight  *vector.DenseVector
+	indexer Indexer
 }
 
-func NewClassifier(extractor Extractor) *Classifier {
+func NewClassifier(indexer Indexer) *Classifier {
 	c := &Classifier{
-		weight:    vector.NewZeroDense(0),
-		extractor: extractor,
+		weight:  vector.NewZeroDense(0),
+		indexer: indexer,
 	}
 
 	return c
@@ -22,15 +22,10 @@ func (c *Classifier) Weight() vector.Vector {
 
 func (c *Classifier) Infer(instance Instance) (example, inference Instance, err error) {
 	example = instance.Clone()
-	inference = instance.Clone()
+	example.Extract(c.indexer)
+	example.SetLabel(instance.Label())
 
-	feature, err := c.extractor.Extract(instance)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	example.SetFeature(feature)
-	inference.SetFeature(feature)
+	feature := example.Feature()
 
 	if c.Weight().Size() < feature.Size() {
 		c.Weight().Resize(feature.Size())
@@ -41,7 +36,7 @@ func (c *Classifier) Infer(instance Instance) (example, inference Instance, err 
 		return nil, nil, err
 	}
 
-	example.SetLabel(instance.Label())
+	inference = instance.Clone()
 	if score > 0 {
 		inference.SetLabel(1)
 	} else {
@@ -60,6 +55,7 @@ func (c *Classifier) Classify(instance Instance) (label int, err error) {
 	return inference.Label(), nil
 }
 
-type Extractor interface {
-	Extract(instance Instance) (vector.Vector, error)
+type Indexer interface {
+	Size() int
+	Index(identifier []int32) int
 }

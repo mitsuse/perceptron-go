@@ -17,7 +17,9 @@ func New() *Perceptron {
 
 func (p *Perceptron) Learn(weight vector.Vector, example, inference Instance) error {
 	if example.Label() != inference.Label() {
-		weight.Add(example.Update())
+		feature := example.Feature().Clone()
+		feature.Scalar(float64(example.Label()))
+		weight.Add(feature)
 
 		if weight.Undefined() {
 			// TODO: Write the error message.
@@ -34,11 +36,8 @@ type Learner interface {
 
 type Instance interface {
 	Label() int
+	Extract(indexer Indexer)
 	Feature() vector.Vector
-
 	SetLabel(label int)
-	SetFeature(vector vector.Vector)
-
-	Update() vector.Vector
 	Clone() Instance
 }
