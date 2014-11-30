@@ -1,6 +1,8 @@
 package perceptron
 
-import "github.com/mitsuse/perceptron-go/vector"
+import (
+	"github.com/mitsuse/perceptron-go/vector"
+)
 
 type Classifier struct {
 	weight  *vector.DenseVector
