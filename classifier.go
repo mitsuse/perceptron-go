@@ -31,12 +31,8 @@ func (c *Classifier) Update(learner Learner, instance Instance) error {
 		return err
 	}
 
-	if score > 0 == (instance.Label() == 1) {
-		return nil
-	}
-
-	if err := learner.Learn(c.model, instance.Label(), feature); err != nil {
-		return err
+	if score > 0 != (instance.Label() == 1) {
+		return learner.Learn(c.model, instance.Label(), feature)
 	}
 
 	return nil
