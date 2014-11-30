@@ -44,10 +44,3 @@ type Instance interface {
 	Update() vector.Vector
 	Clone() Instance
 }
-
-type InstanceIter interface {
-	HasNext() bool
-	Get() Instance
-	Error() error
-	Init() error
-}
