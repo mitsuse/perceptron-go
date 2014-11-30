@@ -15,12 +15,12 @@ func New() *Perceptron {
 	return p
 }
 
-func (p *Perceptron) Learn(weight vector.Vector, label int, feature vector.Vector) error {
+func (p *Perceptron) Learn(model *Model, label int, feature vector.Vector) error {
 	update := feature.Clone()
 	update.Scalar(float64(label))
-	weight.Add(update)
+	model.Weight().Add(update)
 
-	if weight.Undefined() {
+	if model.Weight().Undefined() {
 		// TODO: Write the error message.
 		return errors.New("")
 	}
@@ -29,7 +29,7 @@ func (p *Perceptron) Learn(weight vector.Vector, label int, feature vector.Vecto
 }
 
 type Learner interface {
-	Learn(weight vector.Vector, label int, feature vector.Vector) error
+	Learn(model *Model, label int, feature vector.Vector) error
 }
 
 type Instance interface {

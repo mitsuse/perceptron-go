@@ -5,50 +5,39 @@ import (
 )
 
 type Classifier struct {
-	weight  *vector.DenseVector
-	indexer Indexer
+	model *Model
 }
 
 func NewClassifier(indexer Indexer) *Classifier {
 	c := &Classifier{
-		weight:  vector.NewZeroDense(0),
-		indexer: indexer,
+		model: &Model{
+			weight:  vector.NewZeroDense(0),
+			indexer: indexer,
+		},
 	}
 
 	return c
 }
 
-func (c *Classifier) Weight() vector.Vector {
-	if c.weight.Size() < c.indexer.Size() {
-		c.weight.Resize(c.indexer.Size())
-	}
-
-	return c.weight
-}
-
 func (c *Classifier) Update(learner Learner, instance Instance) error {
-	feature := instance.Extract(c.indexer, true)
+	feature := c.model.Extract(instance, true)
 
-	score, err := c.Weight().Dot(feature)
+	score, err := c.model.Score(feature)
 	if err != nil {
 		return err
 	}
 
-	if score > 0 == (instance.Label() == 1) {
-		return nil
-	}
-
-	if err := learner.Learn(c.Weight(), instance.Label(), feature); err != nil {
-		return err
+	if score > 0 != (instance.Label() == 1) {
+		return learner.Learn(c.model, instance.Label(), feature)
 	}
 
 	return nil
 }
 
 func (c *Classifier) Classify(instance Instance) (int, error) {
-	feature := instance.Extract(c.indexer, false)
+	feature := c.model.Extract(instance, false)
 
-	score, err := c.Weight().Dot(feature)
+	score, err := c.model.Score(feature)
 	if err != nil {
 		return 0, err
 	}
