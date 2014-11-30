@@ -50,7 +50,8 @@ func (p *Perceptron) learnInstance(classifier *Classifier, instance Instance) er
 		return err
 	}
 
-	if instance.Label() == inference.Label() {
+	if instance.Label() != inference.Label() {
+		inference.SetLabel(instance.Label())
 		classifier.Weight().Add(inference.Update())
 
 		if classifier.Weight().Undefined() {
