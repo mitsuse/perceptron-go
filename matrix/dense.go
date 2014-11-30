@@ -49,7 +49,7 @@ func (m *denseMatrix) IsUndefined() bool {
 }
 
 func (m *denseMatrix) invalidate(row, column int) bool {
-	return rows < 0 || m.rows <= row || column < 0 || m.columns <= column
+	return row < 0 || m.rows <= row || column < 0 || m.columns <= column
 }
 
 func (m *denseMatrix) Get(row, column int) (float64, error) {
@@ -82,7 +82,7 @@ func (m *denseMatrix) Add(matrix Matrix) Matrix {
 
 	iter := matrix.NonZeros()
 	for iter.HasNext() {
-		row, colum, value := iter.Get()
+		row, column, value := iter.Get()
 		m.valueSeq[m.columns*row+column] += value
 	}
 
@@ -99,14 +99,14 @@ func (m *denseMatrix) Sub(matrix Matrix) Matrix {
 
 	iter := matrix.NonZeros()
 	for iter.HasNext() {
-		row, colum, value := iter.Get()
+		row, column, value := iter.Get()
 		m.valueSeq[m.columns*row+column] -= value
 	}
 
 	return m
 }
 
-func (m *denseMatrix) Scalar(scalar float64) matrix {
+func (m *denseMatrix) Scalar(scalar float64) Matrix {
 	for i := 0; i < len(m.valueSeq); i++ {
 		m.valueSeq[i] *= scalar
 	}
@@ -115,17 +115,19 @@ func (m *denseMatrix) Scalar(scalar float64) matrix {
 }
 
 func (m *denseMatrix) Resize(rows, columns int) Matrix {
-	matrix := NewZeroDense(rows, columns)
+	valueSeq := make([]float64, rows*columns)
 
 	iter := m.NonZeros()
 	for iter.HasNext() {
-		row, colum, value := iter.Get()
+		row, column, value := iter.Get()
 		if rows <= row || columns <= column {
 			continue
 		}
 
-		m.valueSeq[columns*row+column] = value
+		valueSeq[columns*row+column] = value
 	}
+
+	m.valueSeq = valueSeq
 
 	return m
 }
@@ -133,8 +135,8 @@ func (m *denseMatrix) Resize(rows, columns int) Matrix {
 func (m *denseMatrix) Clone() Matrix {
 	matrix := &denseMatrix{
 		valueSeq: make([]float64, len(m.valueSeq)),
-		rows:     rows,
-		columns:  columns,
+		rows:     m.rows,
+		columns:  m.columns,
 	}
 
 	copy(matrix.valueSeq, m.valueSeq)
@@ -161,9 +163,9 @@ type denseNonZeroIter struct {
 }
 
 func (iter *denseNonZeroIter) HasNext() bool {
-	for row := iter.row; row < iter.matrix.row; row++ {
-		for column := iter.column; column < iter.matrix.column; column++ {
-			value, _ = iter.matrix.Get(row, column)
+	for row := iter.row; row < iter.matrix.rows; row++ {
+		for column := iter.column; column < iter.matrix.columns; column++ {
+			value, _ := iter.matrix.Get(row, column)
 			if value == 0 {
 				continue
 			}

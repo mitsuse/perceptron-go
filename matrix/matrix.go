@@ -7,7 +7,7 @@ type Matrix interface {
 	Update(row, column int, value float64) Matrix
 	Add(matrix Matrix) Matrix
 	Sub(matrix Matrix) Matrix
-	Scalar(scalar float64) matrix
+	Scalar(scalar float64) Matrix
 	Resize(rows, columns int) Matrix
 	Clone() Matrix
 	NonZeros() Iter
