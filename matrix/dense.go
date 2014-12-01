@@ -159,6 +159,8 @@ func (m *denseMatrix) Resize(rows, columns int) Matrix {
 	}
 
 	m.valueSeq = valueSeq
+	m.rows = rows
+	m.columns = columns
 
 	return m
 }
