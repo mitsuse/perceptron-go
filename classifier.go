@@ -21,7 +21,7 @@ func NewClassifier(size int, indexer Indexer) *Classifier {
 	return c
 }
 
-func (c *Classifier) Update(learner Learner, instance Instance) error {
+func (c *Classifier) Update(learner Learner, instance Instance) (int, error) {
 	feature := c.model.Extract(instance, true)
 
 	score := c.model.Score(feature)
@@ -41,7 +41,7 @@ func (c *Classifier) Update(learner Learner, instance Instance) error {
 		return learner.Learn(c.model, exampleUpdate, infernceUpdate)
 	}
 
-	return nil
+	return label, nil
 }
 
 func (c *Classifier) getUpdate(label int, feature matrix.Matrix) matrix.Matrix {
