@@ -1,17 +1,19 @@
 package perceptron
 
 import (
-	"github.com/mitsuse/perceptron-go/vector"
+	"errors"
+
+	"github.com/mitsuse/perceptron-go/matrix"
 )
 
 type Classifier struct {
 	model *Model
 }
 
-func NewClassifier(indexer Indexer) *Classifier {
+func NewClassifier(size int, indexer Indexer) *Classifier {
 	c := &Classifier{
 		model: &Model{
-			weight:  vector.NewZeroDense(0),
+			weight:  matrix.NewZeroDense(size, 0),
 			indexer: indexer,
 		},
 	}
@@ -19,34 +21,54 @@ func NewClassifier(indexer Indexer) *Classifier {
 	return c
 }
 
-func (c *Classifier) Update(learner Learner, instance Instance) error {
+func (c *Classifier) Update(learner Learner, instance Instance) (int, error) {
 	feature := c.model.Extract(instance, true)
 
-	score, err := c.model.Score(feature)
+	score := c.model.Score(feature)
+	if score.IsUndefined() {
+		// TODO: Write the error message.
+		return 0, errors.New("")
+	}
+
+	label, _, _, err := score.Max()
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	if score > 0 != (instance.Label() == 1) {
-		return learner.Learn(c.model, instance.Label(), feature)
+	if label != instance.Label() {
+		example := c.getUpdate(instance.Label(), feature)
+		inference := c.getUpdate(label, feature)
+		return label, learner.Learn(c.model, example, inference)
 	}
 
-	return nil
+	return label, nil
+}
+
+func (c *Classifier) getUpdate(label int, feature matrix.Matrix) matrix.Matrix {
+	rows, columns := c.model.Weight().Shape()
+	update := matrix.NewZeroDense(rows, columns)
+
+	iter := feature.NonZeros()
+	for iter.HasNext() {
+		id, _, value := iter.Get()
+		update.Update(label, id, value)
+	}
+
+	return update
 }
 
 func (c *Classifier) Classify(instance Instance) (int, error) {
 	feature := c.model.Extract(instance, false)
 
-	score, err := c.model.Score(feature)
-	if err != nil {
-		return 0, err
+	score := c.model.Score(feature)
+	if score.IsUndefined() {
+		// TODO: Write the error message.
+		return 0, errors.New("")
 	}
 
-	var label int
-	if score > 0 {
-		label = 1
-	} else {
-		label = -1
+	label, _, _, err := score.Max()
+	if err != nil {
+		return 0, err
 	}
 
 	return label, nil
