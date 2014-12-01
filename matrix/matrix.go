@@ -12,6 +12,7 @@ type Matrix interface {
 	Resize(rows, columns int) Matrix
 	Clone() Matrix
 	NonZeros() Iter
+	Max() (row, column int, maxValue float64, err error)
 }
 
 type Iter interface {

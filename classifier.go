@@ -1,6 +1,8 @@
 package perceptron
 
 import (
+	"errors"
+
 	"github.com/mitsuse/perceptron-go/matrix"
 )
 
@@ -22,31 +24,42 @@ func NewClassifier(size int, indexer Indexer) *Classifier {
 func (c *Classifier) Update(learner Learner, instance Instance) error {
 	feature := c.model.Extract(instance, true)
 
-	score, err := c.model.Score(feature)
+	score := c.model.Score(feature)
+	if score.IsUndefined() {
+		// TODO: Write the error message.
+		return 0, errors.New("")
+	}
+
+	label, _, _, err := score.Max()
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	if score > 0 != (instance.Label() == 1) {
-		return learner.Learn(c.model, instance.Label(), feature)
+	if label != instance.Label() {
+		exampleUpdate := c.getUpdate(instance.Label())
+		inferenceUpdate := c.getUpdate(label)
+		return learner.Learn(c.model, exampleUpdate, infernceUpdate)
 	}
 
+	return nil
+}
+
+func (c *Classifier) getUpdate(label int, feature matrix.Matrix) matrix.Matrix {
 	return nil
 }
 
 func (c *Classifier) Classify(instance Instance) (int, error) {
 	feature := c.model.Extract(instance, false)
 
-	score, err := c.model.Score(feature)
-	if err != nil {
-		return 0, err
+	score := c.model.Score(feature)
+	if score.IsUndefined() {
+		// TODO: Write the error message.
+		return 0, errors.New("")
 	}
 
-	var label int
-	if score > 0 {
-		label = 1
-	} else {
-		label = -1
+	label, _, _, err := score.Max()
+	if err != nil {
+		return 0, err
 	}
 
 	return label, nil

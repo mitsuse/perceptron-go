@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"errors"
+	"math"
 )
 
 type denseMatrix struct {
@@ -83,7 +84,6 @@ func (m *denseMatrix) Update(row, column int, value float64) Matrix {
 }
 
 func (m *denseMatrix) Add(matrix Matrix) Matrix {
-	rows, columns := matrix.Shape()
 	if !m.addable(matrix) {
 		m.undefined = true
 
@@ -100,7 +100,6 @@ func (m *denseMatrix) Add(matrix Matrix) Matrix {
 }
 
 func (m *denseMatrix) Sub(matrix Matrix) Matrix {
-	rows, columns := matrix.Shape()
 	if !m.addable(matrix) {
 		m.undefined = true
 
@@ -185,6 +184,26 @@ func (m *denseMatrix) NonZeros() Iter {
 	}
 
 	return iter
+}
+
+func (m *denseMatrix) Max() (row, column int, maxValue float64, err error) {
+	if m.rows == 0 || m.columns == 0 || m.IsUndefined() {
+		// TODO: Write the error message.
+		err = errors.New("")
+		return
+	}
+
+	maxValue = math.Inf(-1)
+
+	for offset, value := range m.valueSeq {
+		if value > maxValue {
+			row = offset / m.columns
+			column = offset % m.columns
+			maxValue = value
+		}
+	}
+
+	return
 }
 
 type denseNonZeroIter struct {
