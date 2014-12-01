@@ -57,6 +57,11 @@ func (m *denseMatrix) addable(matrix Matrix) bool {
 	return m.rows == rows && m.columns == columns
 }
 
+func (m *denseMatrix) multipliable(matrix Matrix) bool {
+	rows, _ := matrix.Shape()
+	return m.columns == rows
+}
+
 func (m *denseMatrix) Get(row, column int) (float64, error) {
 	if m.invalidate(row, column) || m.IsUndefined() {
 		// TODO: Write the error message.
@@ -109,6 +114,31 @@ func (m *denseMatrix) Sub(matrix Matrix) Matrix {
 	}
 
 	return m
+}
+
+func (m *denseMatrix) Mul(matrix Matrix) Matrix {
+	_, columns := matrix.Shape()
+	n := NewZeroDense(m.rows, columns)
+
+	if !m.multipliable(matrix) {
+		n.undefined = true
+
+		return n
+	}
+
+	iter := matrix.NonZeros()
+	for iter.HasNext() {
+		k, column, value := iter.Get()
+
+		var nValue float64
+		for row := 0; row < m.rows; row++ {
+			nValue += m.Get(row, k) * value
+		}
+
+		n.Update(row, column, nValue)
+	}
+
+	return n
 }
 
 func (m *denseMatrix) Scalar(scalar float64) Matrix {
