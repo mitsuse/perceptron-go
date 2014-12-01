@@ -52,6 +52,10 @@ func (m *denseMatrix) invalidate(row, column int) bool {
 	return row < 0 || m.rows <= row || column < 0 || m.columns <= column
 }
 
+func (m *denseMatrix) addable(matrix Matrix) bool {
+	return m.rows == matrix.rows && m.columns == matrix.columns
+}
+
 func (m *denseMatrix) Get(row, column int) (float64, error) {
 	if m.invalidate(row, column) || m.IsUndefined() {
 		// TODO: Write the error message.
@@ -74,7 +78,7 @@ func (m *denseMatrix) Update(row, column int, value float64) Matrix {
 
 func (m *denseMatrix) Add(matrix Matrix) Matrix {
 	rows, columns := matrix.Shape()
-	if m.rows != rows || m.columns != columns {
+	if !m.addable(matrix) {
 		m.undefined = true
 
 		return m
@@ -91,7 +95,7 @@ func (m *denseMatrix) Add(matrix Matrix) Matrix {
 
 func (m *denseMatrix) Sub(matrix Matrix) Matrix {
 	rows, columns := matrix.Shape()
-	if m.rows != rows || m.columns != columns {
+	if !m.addable(matrix) {
 		m.undefined = true
 
 		return m
