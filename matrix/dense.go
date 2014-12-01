@@ -181,7 +181,7 @@ func (m *denseMatrix) NonZeros() Iter {
 	iter := &denseNonZeroIter{
 		matrix: m,
 		row:    0,
-		column: 0,
+		column: -1,
 		value:  0,
 	}
 
@@ -217,7 +217,7 @@ type denseNonZeroIter struct {
 
 func (iter *denseNonZeroIter) HasNext() bool {
 	for row := iter.row; row < iter.matrix.rows; row++ {
-		for column := iter.column; column < iter.matrix.columns; column++ {
+		for column := iter.column + 1; column < iter.matrix.columns; column++ {
 			value, _ := iter.matrix.Get(row, column)
 			if value == 0 {
 				continue
