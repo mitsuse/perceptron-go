@@ -11,8 +11,8 @@ type denseMatrix struct {
 	undefined bool
 }
 
-func NewDense(rows, columns int) func(valueSeq ...float64) (Matrix, error) {
-	initialize := func(valueSeq ...float64) (Matrix, error) {
+func NewDense(rows, columns int) func(valueSeq ...float64) (*denseMatrix, error) {
+	initialize := func(valueSeq ...float64) (*denseMatrix, error) {
 		if rows*columns != len(valueSeq) {
 			// TODO: Write the error message.
 			return nil, errors.New("")
@@ -30,7 +30,7 @@ func NewDense(rows, columns int) func(valueSeq ...float64) (Matrix, error) {
 	return initialize
 }
 
-func NewZeroDense(rows, columns int) Matrix {
+func NewZeroDense(rows, columns int) *denseMatrix {
 	m := &denseMatrix{
 		valueSeq: make([]float64, rows*columns),
 		rows:     rows,
@@ -130,12 +130,9 @@ func (m *denseMatrix) Mul(matrix Matrix) Matrix {
 	for iter.HasNext() {
 		k, column, value := iter.Get()
 
-		var nValue float64
 		for row := 0; row < m.rows; row++ {
-			nValue += m.Get(row, k) * value
+			n.valueSeq[row*columns+column] += m.valueSeq[row*m.columns+k] * value
 		}
-
-		n.Update(row, column, nValue)
 	}
 
 	return n

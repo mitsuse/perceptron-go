@@ -1,17 +1,17 @@
 package perceptron
 
 import (
-	"github.com/mitsuse/perceptron-go/vector"
+	"github.com/mitsuse/perceptron-go/matrix"
 )
 
 type Classifier struct {
 	model *Model
 }
 
-func NewClassifier(indexer Indexer) *Classifier {
+func NewClassifier(size int, indexer Indexer) *Classifier {
 	c := &Classifier{
 		model: &Model{
-			weight:  vector.NewZeroDense(0),
+			weight:  matrix.NewZeroDense(size, 0),
 			indexer: indexer,
 		},
 	}
