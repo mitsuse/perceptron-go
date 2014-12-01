@@ -53,7 +53,8 @@ func (m *denseMatrix) invalidate(row, column int) bool {
 }
 
 func (m *denseMatrix) addable(matrix Matrix) bool {
-	return m.rows == matrix.rows && m.columns == matrix.columns
+	rows, columns := matrix.Shape()
+	return m.rows == rows && m.columns == columns
 }
 
 func (m *denseMatrix) Get(row, column int) (float64, error) {
