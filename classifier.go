@@ -36,9 +36,9 @@ func (c *Classifier) Update(learner Learner, instance Instance) (int, error) {
 	}
 
 	if label != instance.Label() {
-		exampleUpdate := c.getUpdate(instance.Label())
-		inferenceUpdate := c.getUpdate(label)
-		return learner.Learn(c.model, exampleUpdate, infernceUpdate)
+		example := c.getUpdate(instance.Label(), feature)
+		inference := c.getUpdate(label, feature)
+		return label, learner.Learn(c.model, example, inference)
 	}
 
 	return label, nil

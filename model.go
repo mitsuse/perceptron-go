@@ -19,11 +19,11 @@ func (m *Model) Extract(instance Instance, indexed bool) matrix.Matrix {
 
 func (m *Model) Score(feature matrix.Matrix) matrix.Matrix {
 	weightRows, weightColumns := m.Weight().Shape()
-	featuresRows, _ := feature.Size()
+	featuresRows, _ := feature.Shape()
 
 	if weightColumns < featuresRows {
-		m.Weight.Resize(weightRows, featuresRows)
+		m.Weight().Resize(weightRows, featuresRows)
 	}
 
-	return m.Mul(feature)
+	return m.Weight().Mul(feature)
 }
