@@ -10,12 +10,9 @@ type Classifier struct {
 	model *Model
 }
 
-func NewClassifier(size int, indexer Indexer) *Classifier {
+func NewClassifier(size int) *Classifier {
 	c := &Classifier{
-		model: &Model{
-			weight:  matrix.NewZeroDense(size, 0),
-			indexer: indexer,
-		},
+		model: NewModel(size),
 	}
 
 	return c

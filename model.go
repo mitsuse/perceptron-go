@@ -9,6 +9,15 @@ type Model struct {
 	indexer Indexer
 }
 
+func NewModel(size int) *Model {
+	// TODO: Create indexer.
+	m := &Model{
+		weight: matrix.NewZeroDense(size, 0),
+	}
+
+	return m
+}
+
 func (m *Model) Weight() matrix.Matrix {
 	return m.weight
 }
