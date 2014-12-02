@@ -19,11 +19,26 @@ func NewIndexer() *Indexer {
 }
 
 func (i *Indexer) Size() int {
-	// TODO: Implement this.
-	return 0
+	return i.size
 }
 
 func (i *Indexer) Index(identifier []int32, indexed bool) int {
-	// TODO: Implement this.
-	return 0
+	var index int
+
+	if indexed {
+		node, inserted := i.trie.Update(identifier)
+		if inserted {
+			i.size++
+			node.SetValue(i.size)
+		}
+
+		index = node.Value()
+	} else {
+		node, exist := i.trie.Get(identifier)
+		if exist {
+			index = node.Value()
+		}
+	}
+
+	return index
 }
