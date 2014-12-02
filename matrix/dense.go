@@ -31,7 +31,7 @@ func NewDense(rows, columns int) func(valueSeq ...float64) (*DenseMatrix, error)
 	return initialize
 }
 
-func NewZeroDense(rows, columns int) *DenseMatrix {
+func ZeroDense(rows, columns int) *DenseMatrix {
 	m := &DenseMatrix{
 		valueSeq: make([]float64, rows*columns),
 		rows:     rows,
@@ -117,7 +117,7 @@ func (m *DenseMatrix) Sub(matrix Matrix) Matrix {
 
 func (m *DenseMatrix) Mul(matrix Matrix) Matrix {
 	_, columns := matrix.Shape()
-	n := NewZeroDense(m.rows, columns)
+	n := ZeroDense(m.rows, columns)
 
 	if !m.multipliable(matrix) {
 		n.undefined = true

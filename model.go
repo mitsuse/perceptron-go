@@ -12,7 +12,7 @@ type Model struct {
 func NewModel(size int) *Model {
 	// TODO: Create indexer.
 	m := &Model{
-		weight: matrix.NewZeroDense(size, 0),
+		weight: matrix.ZeroDense(size, 0),
 	}
 
 	return m

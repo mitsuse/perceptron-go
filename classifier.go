@@ -43,7 +43,7 @@ func (c *Classifier) Update(learner Learner, instance Instance) (int, error) {
 
 func (c *Classifier) getUpdate(label int, feature matrix.Matrix) matrix.Matrix {
 	rows, columns := c.model.Weight().Shape()
-	update := matrix.NewZeroDense(rows, columns)
+	update := matrix.ZeroDense(rows, columns)
 
 	iter := feature.NonZeros()
 	for iter.HasNext() {
