@@ -5,21 +5,21 @@ import (
 	"math"
 )
 
-type denseMatrix struct {
+type DenseMatrix struct {
 	valueSeq  []float64
 	rows      int
 	columns   int
 	undefined bool
 }
 
-func NewDense(rows, columns int) func(valueSeq ...float64) (*denseMatrix, error) {
-	initialize := func(valueSeq ...float64) (*denseMatrix, error) {
+func NewDense(rows, columns int) func(valueSeq ...float64) (*DenseMatrix, error) {
+	initialize := func(valueSeq ...float64) (*DenseMatrix, error) {
 		if rows*columns != len(valueSeq) {
 			// TODO: Write the error message.
 			return nil, errors.New("")
 		}
 
-		m := &denseMatrix{
+		m := &DenseMatrix{
 			valueSeq: make([]float64, len(valueSeq)),
 			rows:     rows,
 			columns:  columns,
@@ -31,8 +31,8 @@ func NewDense(rows, columns int) func(valueSeq ...float64) (*denseMatrix, error)
 	return initialize
 }
 
-func NewZeroDense(rows, columns int) *denseMatrix {
-	m := &denseMatrix{
+func ZeroDense(rows, columns int) *DenseMatrix {
+	m := &DenseMatrix{
 		valueSeq: make([]float64, rows*columns),
 		rows:     rows,
 		columns:  columns,
@@ -41,29 +41,29 @@ func NewZeroDense(rows, columns int) *denseMatrix {
 	return m
 }
 
-func (m *denseMatrix) Shape() (rows, columns int) {
+func (m *DenseMatrix) Shape() (rows, columns int) {
 	return m.rows, m.columns
 }
 
-func (m *denseMatrix) IsUndefined() bool {
+func (m *DenseMatrix) IsUndefined() bool {
 	return m.undefined
 }
 
-func (m *denseMatrix) invalidate(row, column int) bool {
+func (m *DenseMatrix) invalidate(row, column int) bool {
 	return row < 0 || m.rows <= row || column < 0 || m.columns <= column
 }
 
-func (m *denseMatrix) addable(matrix Matrix) bool {
+func (m *DenseMatrix) addable(matrix Matrix) bool {
 	rows, columns := matrix.Shape()
 	return m.rows == rows && m.columns == columns
 }
 
-func (m *denseMatrix) multipliable(matrix Matrix) bool {
+func (m *DenseMatrix) multipliable(matrix Matrix) bool {
 	rows, _ := matrix.Shape()
 	return m.columns == rows
 }
 
-func (m *denseMatrix) Get(row, column int) (float64, error) {
+func (m *DenseMatrix) Get(row, column int) (float64, error) {
 	if m.invalidate(row, column) || m.IsUndefined() {
 		// TODO: Write the error message.
 		return 0, errors.New("")
@@ -72,7 +72,7 @@ func (m *denseMatrix) Get(row, column int) (float64, error) {
 	return m.valueSeq[m.columns*row+column], nil
 }
 
-func (m *denseMatrix) Update(row, column int, value float64) Matrix {
+func (m *DenseMatrix) Update(row, column int, value float64) Matrix {
 	if m.invalidate(row, column) || m.IsUndefined() {
 		m.undefined = true
 		return m
@@ -83,7 +83,7 @@ func (m *denseMatrix) Update(row, column int, value float64) Matrix {
 	return m
 }
 
-func (m *denseMatrix) Add(matrix Matrix) Matrix {
+func (m *DenseMatrix) Add(matrix Matrix) Matrix {
 	if !m.addable(matrix) {
 		m.undefined = true
 
@@ -99,7 +99,7 @@ func (m *denseMatrix) Add(matrix Matrix) Matrix {
 	return m
 }
 
-func (m *denseMatrix) Sub(matrix Matrix) Matrix {
+func (m *DenseMatrix) Sub(matrix Matrix) Matrix {
 	if !m.addable(matrix) {
 		m.undefined = true
 
@@ -115,9 +115,9 @@ func (m *denseMatrix) Sub(matrix Matrix) Matrix {
 	return m
 }
 
-func (m *denseMatrix) Mul(matrix Matrix) Matrix {
+func (m *DenseMatrix) Mul(matrix Matrix) Matrix {
 	_, columns := matrix.Shape()
-	n := NewZeroDense(m.rows, columns)
+	n := ZeroDense(m.rows, columns)
 
 	if !m.multipliable(matrix) {
 		n.undefined = true
@@ -137,7 +137,7 @@ func (m *denseMatrix) Mul(matrix Matrix) Matrix {
 	return n
 }
 
-func (m *denseMatrix) Scalar(scalar float64) Matrix {
+func (m *DenseMatrix) Scalar(scalar float64) Matrix {
 	for i := 0; i < len(m.valueSeq); i++ {
 		m.valueSeq[i] *= scalar
 	}
@@ -145,7 +145,7 @@ func (m *denseMatrix) Scalar(scalar float64) Matrix {
 	return m
 }
 
-func (m *denseMatrix) Resize(rows, columns int) Matrix {
+func (m *DenseMatrix) Resize(rows, columns int) Matrix {
 	valueSeq := make([]float64, rows*columns)
 
 	iter := m.NonZeros()
@@ -165,8 +165,8 @@ func (m *denseMatrix) Resize(rows, columns int) Matrix {
 	return m
 }
 
-func (m *denseMatrix) Clone() Matrix {
-	matrix := &denseMatrix{
+func (m *DenseMatrix) Clone() Matrix {
+	matrix := &DenseMatrix{
 		valueSeq: make([]float64, len(m.valueSeq)),
 		rows:     m.rows,
 		columns:  m.columns,
@@ -177,7 +177,7 @@ func (m *denseMatrix) Clone() Matrix {
 	return matrix
 }
 
-func (m *denseMatrix) NonZeros() Iter {
+func (m *DenseMatrix) NonZeros() Iter {
 	iter := &denseNonZeroIter{
 		matrix: m,
 		row:    0,
@@ -188,7 +188,7 @@ func (m *denseMatrix) NonZeros() Iter {
 	return iter
 }
 
-func (m *denseMatrix) Max() (row, column int, maxValue float64, err error) {
+func (m *DenseMatrix) Max() (row, column int, maxValue float64, err error) {
 	if m.rows == 0 || m.columns == 0 || m.IsUndefined() {
 		// TODO: Write the error message.
 		err = errors.New("")
@@ -209,7 +209,7 @@ func (m *denseMatrix) Max() (row, column int, maxValue float64, err error) {
 }
 
 type denseNonZeroIter struct {
-	matrix *denseMatrix
+	matrix *DenseMatrix
 	row    int
 	column int
 	value  float64

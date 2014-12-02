@@ -32,5 +32,5 @@ type Learner interface {
 
 type Instance interface {
 	Label() int
-	Extract(indexer Indexer, indexed bool) matrix.Matrix
+	Extract(indexer *Indexer, indexed bool) matrix.Matrix
 }

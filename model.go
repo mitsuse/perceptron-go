@@ -5,8 +5,17 @@ import (
 )
 
 type Model struct {
-	weight  matrix.Matrix
-	indexer Indexer
+	weight  *matrix.DenseMatrix
+	indexer *Indexer
+}
+
+func NewModel(size int) *Model {
+	// TODO: Create indexer.
+	m := &Model{
+		weight: matrix.ZeroDense(size, 0),
+	}
+
+	return m
 }
 
 func (m *Model) Weight() matrix.Matrix {
@@ -26,4 +35,17 @@ func (m *Model) Score(feature matrix.Matrix) matrix.Matrix {
 	}
 
 	return m.Weight().Mul(feature)
+}
+
+type Indexer struct {
+}
+
+func Size() int {
+	// TODO: Implement this.
+	return 0
+}
+
+func Index(identifier []int32, indexed bool) int {
+	// TODO: Implement this.
+	return 0
 }

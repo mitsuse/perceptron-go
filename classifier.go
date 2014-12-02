@@ -10,12 +10,9 @@ type Classifier struct {
 	model *Model
 }
 
-func NewClassifier(size int, indexer Indexer) *Classifier {
+func NewClassifier(size int) *Classifier {
 	c := &Classifier{
-		model: &Model{
-			weight:  matrix.NewZeroDense(size, 0),
-			indexer: indexer,
-		},
+		model: NewModel(size),
 	}
 
 	return c
@@ -46,7 +43,7 @@ func (c *Classifier) Update(learner Learner, instance Instance) (int, error) {
 
 func (c *Classifier) getUpdate(label int, feature matrix.Matrix) matrix.Matrix {
 	rows, columns := c.model.Weight().Shape()
-	update := matrix.NewZeroDense(rows, columns)
+	update := matrix.ZeroDense(rows, columns)
 
 	iter := feature.NonZeros()
 	for iter.HasNext() {
@@ -72,9 +69,4 @@ func (c *Classifier) Classify(instance Instance) (int, error) {
 	}
 
 	return label, nil
-}
-
-type Indexer interface {
-	Size() int
-	Index(identifier []int32, indexed bool) int
 }
