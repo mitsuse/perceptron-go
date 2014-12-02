@@ -27,3 +27,8 @@ func (m *Model) Score(feature matrix.Matrix) matrix.Matrix {
 
 	return m.Weight().Mul(feature)
 }
+
+type Indexer interface {
+	Size() int
+	Index(identifier []int32, indexed bool) int
+}

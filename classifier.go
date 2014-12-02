@@ -73,8 +73,3 @@ func (c *Classifier) Classify(instance Instance) (int, error) {
 
 	return label, nil
 }
-
-type Indexer interface {
-	Size() int
-	Index(identifier []int32, indexed bool) int
-}
