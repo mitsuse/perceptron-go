@@ -18,6 +18,14 @@ func NewSimpleTrie() *SimpleTrie {
 	return t
 }
 
+func (t *SimpleTrie) Value() int {
+	return t.value
+}
+
+func (t *SimpleTrie) SetValue(value int) {
+	t.value = value
+}
+
 func (t *SimpleTrie) Get(key []int32) (Trie, bool) {
 	node, read := t.find(key)
 
