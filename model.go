@@ -5,8 +5,8 @@ import (
 )
 
 type Model struct {
-	weight  matrix.Matrix
-	indexer Indexer
+	weight  *matrix.DenseMatrix
+	indexer *Indexer
 }
 
 func NewModel(size int) *Model {
@@ -37,7 +37,15 @@ func (m *Model) Score(feature matrix.Matrix) matrix.Matrix {
 	return m.Weight().Mul(feature)
 }
 
-type Indexer interface {
-	Size() int
-	Index(identifier []int32, indexed bool) int
+type Indexer struct {
+}
+
+func Size() int {
+	// TODO: Implement this.
+	return 0
+}
+
+func Index(identifier []int32, indexed bool) int {
+	// TODO: Implement this.
+	return 0
 }
