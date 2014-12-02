@@ -52,12 +52,12 @@ func NewIndexer() *Indexer {
 	return i
 }
 
-func Size() int {
+func (i *Indexer) Size() int {
 	// TODO: Implement this.
 	return 0
 }
 
-func Index(identifier []int32, indexed bool) int {
+func (i *Indexer) Index(identifier []int32, indexed bool) int {
 	// TODO: Implement this.
 	return 0
 }
