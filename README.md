@@ -8,6 +8,7 @@ A library for perceptron learning implemented in [Golang](http://golang.org/).
 ## TODO
 
 - Make it easier to manipulate matrix or vector.
+- Create interfaces and structs to implement features easily.
 - Support for "averaging".
 - Support for "reguralization".
 - Use the efficient implementation of trie for "Indexer".
