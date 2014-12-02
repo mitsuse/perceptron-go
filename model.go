@@ -2,6 +2,7 @@ package perceptron
 
 import (
 	"github.com/mitsuse/perceptron-go/matrix"
+	"github.com/mitsuse/perceptron-go/trie"
 )
 
 type Model struct {
@@ -10,9 +11,9 @@ type Model struct {
 }
 
 func NewModel(size int) *Model {
-	// TODO: Create indexer.
 	m := &Model{
-		weight: matrix.ZeroDense(size, 0),
+		weight:  matrix.ZeroDense(size, 0),
+		indexer: NewIndexer(),
 	}
 
 	return m
@@ -38,6 +39,17 @@ func (m *Model) Score(feature matrix.Matrix) matrix.Matrix {
 }
 
 type Indexer struct {
+	trie *trie.PatriciaTrie
+	size int
+}
+
+func NewIndexer() *Indexer {
+	i := &Indexer{
+		trie: trie.NewPatriciaTrie(),
+		size: 0,
+	}
+
+	return i
 }
 
 func Size() int {
