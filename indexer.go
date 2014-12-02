@@ -26,8 +26,8 @@ func (i *Indexer) Index(identifier []int32, indexed bool) int {
 	var index int
 
 	if indexed {
-		node, inserted := i.trie.Update(identifier)
-		if inserted {
+		node, exist := i.trie.Update(identifier)
+		if !exist {
 			i.size++
 			node.SetValue(i.size)
 		}
