@@ -4,35 +4,35 @@ import (
 	"github.com/mitsuse/perceptron-go/matrix"
 )
 
-type Model struct {
+type Scorer struct {
 	weight  *matrix.DenseMatrix
 	indexer *Indexer
 }
 
-func NewModel(size int) *Model {
-	m := &Model{
+func NewScorer(size int) *Scorer {
+	s := &Scorer{
 		weight:  matrix.ZeroDense(size, 0),
 		indexer: NewIndexer(),
 	}
 
-	return m
+	return s
 }
 
-func (m *Model) Weight() matrix.Matrix {
-	return m.weight
+func (s *Scorer) Weight() matrix.Matrix {
+	return s.weight
 }
 
-func (m *Model) Extract(instance Instance, indexed bool) matrix.Matrix {
-	return instance.Extract(m.indexer, indexed)
+func (s *Scorer) Extract(instance Instance, indexed bool) matrix.Matrix {
+	return instance.Extract(s.indexer, indexed)
 }
 
-func (m *Model) Score(feature matrix.Matrix) matrix.Matrix {
-	weightRows, weightColumns := m.Weight().Shape()
+func (s *Scorer) Score(feature matrix.Matrix) matrix.Matrix {
+	weightRows, weightColumns := s.Weight().Shape()
 	featuresRows, _ := feature.Shape()
 
 	if weightColumns < featuresRows {
-		m.Weight().Resize(weightRows, featuresRows)
+		s.Weight().Resize(weightRows, featuresRows)
 	}
 
-	return m.Weight().Mul(feature)
+	return s.Weight().Mul(feature)
 }

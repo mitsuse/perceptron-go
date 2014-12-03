@@ -15,10 +15,10 @@ func New() *Perceptron {
 	return p
 }
 
-func (p *Perceptron) Learn(model *Model, example, infernce matrix.Matrix) error {
-	model.Weight().Add(example).Sub(infernce)
+func (p *Perceptron) Learn(scorer *Scorer, example, infernce matrix.Matrix) error {
+	scorer.Weight().Add(example).Sub(infernce)
 
-	if model.Weight().IsUndefined() {
+	if scorer.Weight().IsUndefined() {
 		// TODO: Write the error message.
 		return errors.New("")
 	}
@@ -27,7 +27,7 @@ func (p *Perceptron) Learn(model *Model, example, infernce matrix.Matrix) error 
 }
 
 type Learner interface {
-	Learn(model *Model, example, infernce matrix.Matrix) error
+	Learn(scorer *Scorer, example, infernce matrix.Matrix) error
 }
 
 type Instance interface {
