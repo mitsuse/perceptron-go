@@ -7,21 +7,21 @@ import (
 )
 
 type Classifier struct {
-	model *Model
+	scorer *Scorer
 }
 
 func NewClassifier(size int) *Classifier {
 	c := &Classifier{
-		model: NewModel(size),
+		scorer: NewScorer(size),
 	}
 
 	return c
 }
 
 func (c *Classifier) Update(learner Learner, instance Instance) (int, error) {
-	feature := c.model.Extract(instance, true)
+	feature := c.scorer.Extract(instance, true)
 
-	score := c.model.Score(feature)
+	score := c.scorer.Score(feature)
 	if score.IsUndefined() {
 		// TODO: Write the error message.
 		return 0, errors.New("")
@@ -35,14 +35,14 @@ func (c *Classifier) Update(learner Learner, instance Instance) (int, error) {
 	if label != instance.Label() {
 		example := c.getUpdate(instance.Label(), feature)
 		inference := c.getUpdate(label, feature)
-		return label, learner.Learn(c.model, example, inference)
+		return label, learner.Learn(c.scorer, example, inference)
 	}
 
 	return label, nil
 }
 
 func (c *Classifier) getUpdate(label int, feature matrix.Matrix) matrix.Matrix {
-	rows, columns := c.model.Weight().Shape()
+	rows, columns := c.scorer.Weight().Shape()
 	update := matrix.ZeroDense(rows, columns)
 
 	iter := feature.NonZeros()
@@ -55,9 +55,9 @@ func (c *Classifier) getUpdate(label int, feature matrix.Matrix) matrix.Matrix {
 }
 
 func (c *Classifier) Classify(instance Instance) (int, error) {
-	feature := c.model.Extract(instance, false)
+	feature := c.scorer.Extract(instance, false)
 
-	score := c.model.Score(feature)
+	score := c.scorer.Score(feature)
 	if score.IsUndefined() {
 		// TODO: Write the error message.
 		return 0, errors.New("")
