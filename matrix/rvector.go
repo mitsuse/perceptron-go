@@ -28,7 +28,7 @@ func (v *RVector) Size() int {
 }
 
 func (v *RVector) IsUndefined() bool {
-	return v.undefined
+	return v.undefined || v.matrix.IsUndefined()
 }
 
 func (v *RVector) Get(index int) (float64, error) {
