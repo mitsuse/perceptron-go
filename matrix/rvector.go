@@ -23,10 +23,20 @@ func (v *RVector) Matrix() Matrix {
 }
 
 func (v *RVector) Size() int {
-	_, column := v.matrix
+	_, column := v.matrix.Shape()
 	return column
 }
 
 func (v *RVector) IsUndefined() bool {
 	return v.undefined
+}
+
+func (v *RVector) Get(index int) (float64, error) {
+	return v.matrix.Get(v.row, index)
+}
+
+func (v *RVector) Update(index int) *RVector {
+	v.matrix.Update(v.row, index)
+
+	return v
 }
