@@ -1,8 +1,9 @@
 package matrix
 
 type RVector struct {
-	row    int
-	matrix Matrix
+	row       int
+	undefined bool
+	matrix    Matrix
 }
 
 func (v *RVector) Matrix() Matrix {
@@ -12,4 +13,8 @@ func (v *RVector) Matrix() Matrix {
 func (v *RVector) Size() int {
 	_, column := v.matrix
 	return column
+}
+
+func (v *RVector) IsUndefined() bool {
+	return v.undefined
 }
