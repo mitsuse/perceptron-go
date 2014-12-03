@@ -35,8 +35,8 @@ func (v *RVector) Get(index int) (float64, error) {
 	return v.matrix.Get(v.row, index)
 }
 
-func (v *RVector) Update(index int) *RVector {
-	v.matrix.Update(v.row, index)
+func (v *RVector) Update(index int, value float64) *RVector {
+	v.matrix.Update(v.row, index, value)
 
 	return v
 }
