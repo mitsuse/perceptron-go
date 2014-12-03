@@ -6,6 +6,18 @@ type RVector struct {
 	matrix    Matrix
 }
 
+func NewRVector(matrix Matrix, row int) *RVector {
+	rows, column := v.matrix
+
+	v := &RVector{
+		row:       row,
+		undefined: row >= rows,
+		matrix:    matrix,
+	}
+
+	return v
+}
+
 func (v *RVector) Matrix() Matrix {
 	return v.matrix
 }
