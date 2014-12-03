@@ -7,7 +7,7 @@ type RVector struct {
 }
 
 func NewRVector(matrix Matrix, row int) *RVector {
-	rows, column := v.matrix
+	rows, _ := matrix.Shape()
 
 	v := &RVector{
 		row:       row,
