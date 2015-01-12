@@ -1,7 +1,9 @@
 # Perceptron
 
+[![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](http://opensource.org/licenses/MIT)
 [![Circle CI](https://circleci.com/gh/mitsuse/perceptron-go.svg?style=shield)](https://circleci.com/gh/mitsuse/perceptron-go)
-[![GoDoc](http://godoc.org/github.com/mitsuse/perceptron-go?status.svg)](http://godoc.org/github.com/mitsuse/perceptron-go)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/mitsuse/perceptron-go)
+[![Coverage Status](https://coveralls.io/repos/mitsuse/perceptron-go/badge.png)](https://coveralls.io/r/mitsuse/perceptron-go)
 
 A library for perceptron learning implemented in [Golang](http://golang.org/).
 
